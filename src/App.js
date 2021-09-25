@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import './App.css';
 import Currency from './components/Currency';
+import './App.scss'
 
 function App() {
   const [currencies, setCurrencies] = useState(null)
@@ -38,13 +38,11 @@ function App() {
   return (
     <div className="App">
       <button id='view' onClick={changeView}>Show</button>
-      {show && currencies && Object.entries(currencies).map(([currency, properties]) =>
-        <div key={currency}>
-          {properties.symbol}<br />
-          {properties.rate}
-          <Currency currency={currency} />
-        </div>
-      )}
+      <ul>
+        {show && currencies && Object.entries(currencies).map(([currency, properties]) =>
+          <Currency currency={currency} symbol={properties.symbol} rate={properties.rate} key={currency} />
+        )}
+      </ul>
     </div>
   );
 }

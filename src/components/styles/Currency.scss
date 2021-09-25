@@ -1,0 +1,15 @@
+.currency {
+  &__item {
+    list-style: none;
+    border: 1px solid black;
+    text-align: center;
+  }
+  &__name {
+    background-color: rgba(148, 85, 85, 0.363);
+    &:hover {
+      cursor: pointer;
+      color: red;
+      background-color: rgba(61, 30, 30, 0.24);
+    }
+  }
+}

@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import qq from '../qq.json'
+import Details from './Details'
+import './styles/Currency.scss'
 
-const Currency = ({ currency }) => {
+const Currency = ({ currency, symbol, rate }) => {
   const [countries, setCountries] = useState([])
+  const [view, setView] = useState(false)
+
   useEffect(() => {
     let arr = []
     for (const key in qq) {
@@ -13,18 +17,16 @@ const Currency = ({ currency }) => {
     setCountries(arr)
   }, [currency])
 
+  const changeView = (e) => {
+    e.preventDefault()
+    setView(!view)
+  }
+
   return (
-    <div>
-      {countries.map((country) =>
-        <img
-          src={`https://flagcdn.com/40x30/${country}.png`}
-          width="40"
-          height="30"
-          alt={country}
-          key={country}>
-        </img>
-      )}
-    </div>
+    <li className={'currency__item'}>
+      <div className={'currency__name'} onClick={changeView}>{symbol}</div>
+      {view && <Details currency={currency} rate={rate} countries={countries} />}
+    </li>
   )
 }
 
