@@ -2,24 +2,27 @@
   "name": "electron_react_app",
   "version": "0.1.0",
   "private": true,
-  "main": "public/main.js",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^12.1.0",
     "@testing-library/user-event": "^13.2.1",
-    "electron": "^15.0.0",
     "node-sass": "^6.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
     "web-vitals": "^2.1.0"
   },
+  "main": "electron/main.js",
+  "productName": "App",
+  "homepage": "./",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set BROWSER=none && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron-dev": "nodemon --exec electron ."
+    "electron-dev": "set ELECTRON_START_URL=http://localhost:3000 && electron .",
+    "build-electron": "mkdir build/electron && robocopy electron build/electron /S",
+    "package": "electron-builder build --win --mac -c.extraMetadata.main=build/electron/main.js --publish never"
   },
   "eslintConfig": {
     "extends": [
@@ -38,5 +41,20 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "electron-builder": "^22.11.7",
+    "electron": "^15.0.0"
+  },
+  "build": {
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "publish": {
+      "provider": "github",
+      "repo": "electron",
+      "owner": "zxfsgn"
+    }
   }
 }
