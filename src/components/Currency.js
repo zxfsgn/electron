@@ -1,34 +1,41 @@
-import React, { useEffect, useState } from 'react'
+import React, { Component } from 'react'
 import qq from '../qq.json'
 import Details from './Details'
 import './styles/Currency.scss'
 
-const Currency = ({ currency, symbol, rate }) => {
-  const [countries, setCountries] = useState([])
-  const [view, setView] = useState(false)
+export class Currency extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { countries: [], view: false }
+  }
 
-  useEffect(() => {
+  componentDidMount() {
     let arr = []
     for (const key in qq) {
-      if (qq[key] === currency) {
+      if (qq[key] === this.props.currency) {
         arr.push(key.toLowerCase())
       }
     }
-    setCountries(arr)
-  }, [currency])
-
-  const changeView = (e) => {
-    e.preventDefault()
-    setView(!view)
+    this.setState({ countries: arr })
   }
 
-  return (
-    <li className={'currency__item'}>
-      <div className={'currency__name'} onClick={changeView}>{symbol}</div>
-      {view && <Details currency={currency} rate={rate} countries={countries} />}
-    </li>
-  )
+  changeView = () => {
+    this.setState((state) => ({
+      view: !state.view
+    }))
+  }
+
+  render() {
+    const { currency, symbol, rate } = this.props
+    const { countries, view } = this.state
+
+    return (
+      <li className={'currency__item'}>
+        <div className={'currency__name'} onClick={this.changeView}>{symbol}</div>
+        {view && <Details currency={currency} rate={rate} countries={countries} />}
+      </li>
+    )
+  }
 }
 
 export default Currency
-

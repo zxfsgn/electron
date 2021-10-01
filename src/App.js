@@ -1,50 +1,57 @@
-import { useEffect, useState } from 'react';
-import Currency from './components/Currency';
+import React, { Component } from 'react'
+import Currency from './components/Currency'
 import './App.scss'
 
-function App() {
-  const [currencies, setCurrencies] = useState(null)
-  const [show, setShow] = useState(false)
+export class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { currencies: null, show: false }
+  }
 
-  useEffect(() => {
+  componentDidMount() {
     const getCurrencies = async () => {
-      let rate = await fetch('http://data.fixer.io/api/latest?access_key=22b1355a2f094758f387079fefae8442')
-      let symbols = await fetch('http://data.fixer.io/api/symbols?access_key=22b1355a2f094758f387079fefae8442')
-      symbols = await symbols.json()
-      rate = await rate.json()
+      const rate = await window.api.invoke('getRate', 'http://data.fixer.io/api/latest?access_key=22b1355a2f094758f387079fefae8442')
+      const symbols = await window.api.invoke('getSymbols', 'http://data.fixer.io/api/symbols?access_key=22b1355a2f094758f387079fefae8442')
       let obj = {}
       for (const key in rate.rates) {
         obj[key] = { rate: rate.rates[key], symbol: symbols.symbols[key] }
       }
-      setCurrencies(obj)
+      this.setState({ currencies: obj })
     }
     getCurrencies()
-  }, [])
+  }
 
-  useEffect(() => {
+  componentDidUpdate() {
     const button = document.querySelector('#view')
-    if (show) {
+    if (this.state.show) {
       button.textContent = 'Hide'
     } else {
       button.textContent = 'Show'
     }
-  }, [show])
-
-  const changeView = (e) => {
-    e.preventDefault()
-    setShow(!show)
   }
 
-  return (
-    <div className="App">
-      <button id='view' onClick={changeView}>Show</button>
-      <ul>
-        {show && currencies && Object.entries(currencies).map(([currency, properties]) =>
-          <Currency currency={currency} symbol={properties.symbol} rate={properties.rate} key={currency} />
-        )}
-      </ul>
-    </div>
-  );
+  changeView = (e) => {
+    e.preventDefault()
+    this.setState((state) => ({
+      show: !state.show
+    }))
+  }
+
+  render() {
+    const { currencies, show } = this.state
+
+    return (
+      <div className="App">
+        <button id='view' onClick={this.changeView}>Show</button>
+        <ul>
+          {show && currencies && Object.entries(currencies).map(([currency, properties]) =>
+            <Currency currency={currency} symbol={properties.symbol} rate={properties.rate} key={currency} />
+          )}
+        </ul>
+        {show && !currencies && <div>Загрузка...</div>}
+      </div>
+    )
+  }
 }
 
-export default App;
+export default App

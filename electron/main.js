@@ -1,15 +1,40 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const url = require('url')
 const path = require('path')
+const http = require("http");
+
+//Добавил 2 следующие функции
+function doRequest(options) {
+  return new Promise((resolve, reject) => {
+    const req = http.get(options, (res) => {
+      res.setEncoding("utf8")
+      let body = ""
+      res.on("data", chunk => {
+        body += chunk;
+      });
+      res.on("end", () => {
+        resolve(JSON.parse(body))
+      })
+    })
+    req.on('error', (err) => {
+      reject(err)
+    });
+  })
+}
+
+const fetching = (channel) => {
+  ipcMain.handle(channel, async (event, url) => {
+    const res = await doRequest(url)
+    return res
+  })
+}
 
 function createWindow() {
   const win = new BrowserWindow({
     width: 800,
-    height: 800,
-    minHeight: 400,
-    minWidth: 400,
+    height: 600,
     webPreferences: {
-      nodeIntegration: true
+      preload: path.join(__dirname, "preload.js")
     }
   })
 
@@ -38,3 +63,6 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+fetching('getRate')
+fetching('getSymbols')
