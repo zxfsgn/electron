@@ -3,7 +3,6 @@ const url = require('url')
 const path = require('path')
 const http = require("http");
 
-//Добавил 2 следующие функции
 function doRequest(options) {
   return new Promise((resolve, reject) => {
     const req = http.get(options, (res) => {
@@ -64,5 +63,6 @@ app.on('activate', () => {
   }
 })
 
+fetching('getCountries')
 fetching('getRate')
 fetching('getSymbols')

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import qq from '../qq.json'
 import Details from './Details'
 import './styles/Currency.scss'
 
@@ -10,6 +9,7 @@ export class Currency extends Component {
   }
 
   componentDidMount() {
+    const qq = this.props.qq
     let arr = []
     for (const key in qq) {
       if (qq[key] === this.props.currency) {
